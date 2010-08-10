@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class AppTest < Test::Unit::TestCase
+  
+  include TestHelper
+  
   def setup
     @app = stub
     @engine = stub(
@@ -9,9 +12,8 @@ class AppTest < Test::Unit::TestCase
       :read => 'content'
     )
     @engine_klass = stub(:new => @engine)
-    @fewer_app = Fewer::App.new(@app, {
+    @fewer_app = Fewer::App.new({
       :engine => @engine_klass,
-      :mount => '/path',
       :root => 'root'
     })
     @browser = Rack::Test::Session.new(Rack::MockSession.new(@fewer_app))
@@ -62,12 +64,4 @@ class AppTest < Test::Unit::TestCase
     assert_equal 500, @browser.last_response.status
   end
 
-  private
-    def decode(string)
-      Fewer::Serializer.decode(string)
-    end
-
-    def encode(obj)
-      Fewer::Serializer.encode(obj)
-    end
 end
